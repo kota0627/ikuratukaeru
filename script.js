@@ -23,7 +23,8 @@ async function loginOrSignup() {
     alert("ログイン成功");
     updateDisplayByDate();
   } catch (err) {
-    if (err.code === "auth/user-not-found") {
+　　if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found") {
+
       const result = await createUserWithEmailAndPassword(auth, email, password);
       currentUser = result.user;
       alert("新規登録成功");
