@@ -88,8 +88,8 @@ async function updateDisplay(){
   qs.forEach(d=>{
     const e=d.data(); total+=e.amount;
     const li=document.createElement("li");
-    li.innerHTML=
-      `<span><strong>${e.date}</strong> - ${e.desc}：${e.amount} 円</span>
+    li.innerHTML =
+      `<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
        <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
     historyList.appendChild(li);
   });
