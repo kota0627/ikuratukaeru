@@ -8,24 +8,27 @@ button        { background:#2196f3; color:#fff; border:none; border-radius:6px; 
 .tab-button.active{ background:#2196f3; color:#fff; }
 ul            { list-style:none; padding:0; }
 
+/* ▼ 支出履歴行とゴミ箱レイアウト */
 li{
   background:#eee;
   padding:10px;
   border-radius:8px;
   margin-bottom:8px;
-  display:flex;                       /* テキストと🗑を横並び */
-  justify-content:space-between;
-  align-items:center;
+  position:relative;          /* ゴミ箱を行内絶対配置 */
 }
 
 .del-btn{
+  position:absolute;
+  right:10px;                 /* 右端から 10px */
+  top:50%; transform:translateY(-50%);
   background:transparent;
   border:none;
-  color:#f44336;                      /* アイコンだけ赤 */
+  color:#f44336;              /* アイコンだけ赤 */
   font-size:18px;
   cursor:pointer;
-  margin-left:8px;
+  margin-left:2em;            /* テキストとアイコンの間隔≈全角2文字 */
 }
+/* ▲ 支出行レイアウト */
 
 .green { color:#0baf4b; font-weight:bold; }
 .red   { color:#f44336; font-weight:bold; }
