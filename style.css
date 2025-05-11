@@ -24,9 +24,9 @@ li{
   background:transparent;
   border:none;
   color:#f44336;              /* アイコンだけ赤 */
-  font-size:25px;
+  font-size:30px;
   cursor:pointer;
-  margin-left:8em;            /* テキストとアイコンの間隔≈全角2文字 */
+  margin-left:80em;            /* テキストとアイコンの間隔≈全角2文字 */
 }
 /* ▲ 支出行レイアウト */
 
