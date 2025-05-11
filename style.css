@@ -7,8 +7,8 @@ button        { background:#2196f3; color:#fff; border:none; border-radius:6px; 
                 margin-right:5px; border-radius:8px 8px 0 0; cursor:pointer; }
 .tab-button.active{ background:#2196f3; color:#fff; }
 ul            { list-style:none; padding:0; }
-li            { background:#eee; padding:10px; border-radius:8px; margin-bottom:8px; position:relative; }
-.del-btn      { float:right; background:#f44336; border:none; color:#fff;
-                padding:3px 8px; border-radius:4px; cursor:pointer; }
+li            { background:#eee; padding:10px; border-radius:8px; margin-bottom:8px; }
+.del-btn      { background:transparent; border:none; color:#f44336;
+                font-size:18px; cursor:pointer; margin-left:8px; float:right; }
 .green        { color:#0baf4b; font-weight:bold; }
 .red          { color:#f44336; font-weight:bold; }
