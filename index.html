@@ -3,35 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <title>今月いくら使えるくん</title>
+
+  <!-- ★ 追加：スマホで横スクロールが起きず 1 倍ズームで表示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <link rel="stylesheet" href="style.css" />
-  <!-- 空 favicon で 404 を抑止（任意で差し替え可） -->
   <link rel="icon" href="data:,">
 </head>
 <body>
 
-  <!-- ===== タブ UI & 入力画面 ===== -->
+  <!-- ===== タブ UI ===== -->
   <div class="tabs">
     <button class="tab-button active" onclick="switchTab('inputTab')">📋 記録する</button>
     <button class="tab-button" onclick="switchTab('graphTab')">📊 グラフで見る</button>
   </div>
 
-  <!-- 入力タブ -->
+  <!-- ===== 入力タブ ===== -->
   <div id="inputTab" class="tab-content">
     <h1>今月いくら使えるくん</h1>
 
     <div class="section">
       <label>月の予算（円）:</label>
-      <input type="number" id="budgetInput" placeholder="例：30000" />
+      <input type="number" id="budgetInput" placeholder="例：30000">
       <button onclick="setBudget()">設定</button>
     </div>
 
     <div class="section">
       <label>支出日:</label>
-      <input type="date" id="dateInput" onchange="updateDisplayByDate()" />
+      <input type="date" id="dateInput" onchange="updateDisplayByDate()">
       <label>内容:</label>
-      <input type="text" id="descInput" placeholder="例：ランチ" />
+      <input type="text" id="descInput" placeholder="例：ランチ">
       <label>金額（円）:</label>
-      <input type="number" id="amountInput" />
+      <input type="number" id="amountInput">
       <button onclick="addExpense()">追加</button>
     </div>
 
@@ -42,46 +45,14 @@
     </div>
   </div>
 
-  <!-- グラフタブ -->
+  <!-- ===== グラフタブ ===== -->
   <div id="graphTab" class="tab-content" style="display:none;">
     <h2>月別支出グラフ</h2>
     <canvas id="monthlyChart" width="400" height="300"></canvas>
   </div>
 
-  <!-- ===== Firebase 初期化 ===== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, getDoc, setDoc,
-      getDocs, doc, query, where, deleteDoc
-    } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
-    import {
-      getAuth, createUserWithEmailAndPassword,
-      signInWithEmailAndPassword, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCz8ZSNckbmrACW4cJqKx1I4GSQNyjDRkM",
-      authDomain: "ikurakun-firebase.firebaseapp.com",
-      projectId: "ikurakun-firebase",
-      storageBucket: "ikurakun-firebase.appspot.com",
-      messagingSenderId: "492357155886",
-      appId: "1:492357155886:web:9a81837ea8361d2d0ef3bf"
-    };
-
-    const app  = initializeApp(firebaseConfig);
-    const db   = getFirestore(app);
-    const auth = getAuth(app);
-
-    Object.assign(window, {
-      db, auth,
-      collection, addDoc, getDoc, setDoc,
-      getDocs, doc, query, where, deleteDoc,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      onAuthStateChanged
-    });
-  </script>
+  <!-- ===== Firebase 初期化（省略：前回と同じ） ===== -->
+  <script type="module" src="firebase-init.js"></script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
