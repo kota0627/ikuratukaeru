@@ -1,6 +1,9 @@
 /* ============ 共通スタイル ============ */
 body          { font-family: system-ui, sans-serif; background:#f4f4f4; padding:16px; }
-input,button  { width:100%; margin:6px 0 12px; padding:10px; font-size:1rem; }
+
+input,button  { width:100%; margin:6px 0 12px; padding:10px;
+                font-size:1rem; box-sizing:border-box; }  /* ←★ はみ出し防止 */
+
 button        { background:#2196f3; color:#fff; border:none; border-radius:6px; cursor:pointer; }
 ul            { list-style:none; padding:0; margin:0; }
 
@@ -14,12 +17,12 @@ ul            { list-style:none; padding:0; margin:0; }
 
 /* カード */
 .tab-content  { max-width:600px; margin:auto; background:#fff; padding:20px;
-                border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,.1); }
+                border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,.1); box-sizing:border-box; }
 
 /* 支出履歴行 & ゴミ箱 */
 li{
   background:#eee;
-  padding:12px 48px 12px 12px; /* 右側 48px 分はアイコン用スペース */
+  padding:12px 56px 12px 12px;  /* 右側 56px：アイコン用スペース */
   border-radius:8px;
   margin-bottom:10px;
   position:relative;
@@ -27,7 +30,8 @@ li{
 }
 .del-btn{
   position:absolute;
-  right:12px; top:50%; transform:translateY(-50%);
+  right:4px;                    /* ←★ 最右端に寄せる */
+  top:50%; transform:translateY(-50%);
   background:transparent; border:none; cursor:pointer;
   color:#f44336; font-size:22px;
 }
@@ -40,6 +44,7 @@ li{
   input,button    { font-size:1.05rem; padding:12px; }
   .tab-button     { font-size:.95rem; margin-right:2px; }
 
-  li              { padding:12px 44px 12px 12px; }
-  .del-btn        { font-size:20px; right:8px; }
+  /* ゴミ箱まわり調整 */
+  li              { padding:12px 52px 12px 12px; }
+  .del-btn        { font-size:20px; right:4px; }
 }
