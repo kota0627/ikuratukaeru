@@ -20,13 +20,13 @@ li{
 .del-btn{
   position:absolute;
   right:2px;               
-  top:30%; transform:translateY(-30%);
+  top:100%; transform:translateY(-100%);
   background:transparent;
   border:none;
   color:#f44336;              /* アイコンだけ赤 */
   font-size:25px;
   cursor:pointer;
-  margin-left:2em;            /* テキストとアイコンの間隔≈全角2文字 */
+  margin-left:8em;            /* テキストとアイコンの間隔≈全角2文字 */
 }
 /* ▲ 支出行レイアウト */
 
