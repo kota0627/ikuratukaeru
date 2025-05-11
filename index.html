@@ -34,7 +34,7 @@
     </div>
 
     <div class="section">
-      <h2>残り使える金額：<span id="remainingAmount">0</span> 円</h2>
+      <h2>残り使える金額：<span id="remainingAmount" class="green">0</span> 円</h2>
       <h3>支出履歴</h3>
       <ul id="historyList"></ul>
     </div>
@@ -51,14 +51,13 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDoc, setDoc,
-      getDocs, doc, query, where
+      getDocs, doc, query, where, deleteDoc
     } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
     import {
       getAuth, createUserWithEmailAndPassword,
       signInWithEmailAndPassword, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 
-    /* Firebase 設定 */
     const firebaseConfig = {
       apiKey: "AIzaSyCz8ZSNckbmrACW4cJqKx1I4GSQNyjDRkM",
       authDomain: "ikurakun-firebase.firebaseapp.com",
@@ -68,27 +67,19 @@
       appId: "1:492357155886:web:9a81837ea8361d2d0ef3bf"
     };
 
-    /* 初期化 */
     const app  = initializeApp(firebaseConfig);
     const db   = getFirestore(app);
     const auth = getAuth(app);
 
     /* グローバル公開（script.js から利用） */
-    window.db  = db;
-    window.auth = auth;
-
-    window.collection = collection;
-    window.addDoc     = addDoc;
-    window.getDoc     = getDoc;
-    window.setDoc     = setDoc;
-    window.getDocs    = getDocs;
-    window.doc        = doc;
-    window.query      = query;
-    window.where      = where;
-
-    window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-    window.signInWithEmailAndPassword     = signInWithEmailAndPassword;
-    window.onAuthStateChanged             = onAuthStateChanged;
+    Object.assign(window, {
+      db, auth,
+      collection, addDoc, getDoc, setDoc, getDocs,
+      doc, query, where, deleteDoc,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    });
   </script>
 
   <!-- Chart.js -->
