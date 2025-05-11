@@ -1,4 +1,4 @@
-// ===== Firebase 参照 =====
+// ===== Firebase オブジェクト =====
 const {
   db, auth,
   collection, addDoc, getDoc, setDoc,
@@ -18,47 +18,39 @@ let currentUser = null;
 let barChart    = null;
 
 /* ===== Util ===== */
-const getMonthKey = (d) => d.slice(0, 7);
-const markErr = (el, flag) => el.style.border = flag ? "2px solid red" : "";
+const getMonthKey = d => d.slice(0,7);
+const markErr     = (el,f)=>el.style.border=f?"2px solid red":"";
 
-/* ===== ログイン or 新規登録 ===== */
-async function loginOrSignup() {
-  const email = prompt("メールアドレスを入力");
-  const pass  = prompt("パスワードを入力（6文字以上）");
-  if (!email || !pass) return;
-
-  try {
-    const r = await signInWithEmailAndPassword(auth, email, pass);
-    currentUser = r.user; alert("ログイン成功"); updateDisplay();
-  } catch (err) {
-    if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found") {
-      const r = await createUserWithEmailAndPassword(auth, email, pass);
-      currentUser = r.user; alert("新規登録成功"); updateDisplay();
-    } else {
-      alert("ログイン失敗: " + err.message);
-    }
+/* ===== ログイン / 新規登録 ===== */
+async function loginOrSignup(){
+  const email=prompt("メールアドレスを入力"), pass=prompt("パスワードを入力（6文字以上）");
+  if(!email||!pass) return;
+  try{
+    const r=await signInWithEmailAndPassword(auth,email,pass);
+    currentUser=r.user; alert("ログイン成功"); updateDisplay();
+  }catch(err){
+    if(err.code==="auth/invalid-credential"||err.code==="auth/user-not-found"){
+      const r=await createUserWithEmailAndPassword(auth,email,pass);
+      currentUser=r.user; alert("新規登録成功"); updateDisplay();
+    }else alert("ログイン失敗: "+err.message);
   }
 }
-onAuthStateChanged(auth, (u)=>{ currentUser=u; u?updateDisplay():loginOrSignup(); });
+onAuthStateChanged(auth,u=>{ currentUser=u; u?updateDisplay():loginOrSignup(); });
 
 /* ===== 予算設定 ===== */
 async function setBudget(){
   if(!currentUser) return;
-  const date = dateInput.value || new Date().toISOString().slice(0,10);
-  await setDoc(doc(db,"users",currentUser.uid,"budgets",getMonthKey(date)),{
-    budget:Number(budgetInput.value||0)
-  });
+  const key=getMonthKey(dateInput.value||new Date().toISOString().slice(0,10));
+  await setDoc(doc(db,"users",currentUser.uid,"budgets",key),{budget:Number(budgetInput.value||0)});
   updateDisplay();
 }
 
 /* ===== 支出追加 ===== */
 async function addExpense(){
   if(!currentUser) return;
-  const date = dateInput.value, desc=descInput.value.trim(), amt=Number(amountInput.value);
-
+  const date=dateInput.value, desc=descInput.value.trim(), amt=Number(amountInput.value);
   markErr(dateInput,!date); markErr(descInput,!desc); markErr(amountInput,!amt||amt<=0);
   if(!date||!desc||!amt||amt<=0){ alert("正しく入力してください"); return; }
-
   await addDoc(collection(db,"users",currentUser.uid,"expenses"),{
     date,desc,amount:amt,month:getMonthKey(date),createdAt:new Date()
   });
@@ -76,47 +68,47 @@ async function deleteExpense(id){
 /* ===== 画面更新 ===== */
 async function updateDisplay(){
   if(!currentUser) return;
-  const date = dateInput.value || new Date().toISOString().slice(0,10);
-  const key  = getMonthKey(date);
+  const date=dateInput.value||new Date().toISOString().slice(0,10);
+  const key =getMonthKey(date);
 
-  // 予算
-  const bSnap = await getDoc(doc(db,"users",currentUser.uid,"budgets",key));
-  const budget= bSnap.exists()? bSnap.data().budget : 0;
-  budgetInput.value = budget;
+  const bSnap=await getDoc(doc(db,"users",currentUser.uid,"budgets",key));
+  const budget=bSnap.exists()?bSnap.data().budget:0;
+  budgetInput.value=budget;
 
-  // 支出
-  const q  = query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
-  const qs = await getDocs(q);
+  const q= query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
+  const qs=await getDocs(q);
 
-  let total=0; historyList.innerHTML="";
+  historyList.innerHTML="";
+  let total=0;
   qs.forEach(d=>{
     const e=d.data(); total+=e.amount;
     const li=document.createElement("li");
-    li.innerHTML=`<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
-                  <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
+    li.innerHTML=
+      `<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
+       <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
     historyList.appendChild(li);
   });
 
-  const remain = budget - total;
-  remainingEl.textContent = remain;
-  remainingEl.classList.toggle("green", remain>=0);
-  remainingEl.classList.toggle("red",   remain<0);
+  const remain=budget-total;
+  remainingEl.textContent=remain;
+  remainingEl.classList.toggle("green",remain>=0);
+  remainingEl.classList.toggle("red",remain<0);
 }
 
 /* ===== グラフ更新 ===== */
 async function updateChart(){
   if(!currentUser) return;
-  const exp = await getDocs(collection(db,"users",currentUser.uid,"expenses"));
-  const bud = await getDocs(collection(db,"users",currentUser.uid,"budgets"));
+  const exp=await getDocs(collection(db,"users",currentUser.uid,"expenses"));
+  const bud=await getDocs(collection(db,"users",currentUser.uid,"budgets"));
 
   const months=new Set();
   exp.forEach(d=>months.add(d.data().month));
   bud.forEach(d=>months.add(d.id));
   const mArr=[...months].sort();
 
-  const budgets = mArr.map(m=>{
+  const budgets=mArr.map(m=>{
     const b=bud.docs.find(d=>d.id===m); return b?b.data().budget:0;});
-  const totals  = mArr.map(m=>{
+  const totals=mArr.map(m=>{
     return exp.docs.filter(d=>d.data().month===m)
                    .reduce((s,x)=>s+x.data().amount,0); });
 
@@ -138,7 +130,7 @@ function switchTab(id){
   if(id==="graphTab") updateChart();
 }
 
-/* ===== 初期処理 ===== */
+/* ===== 初期 ===== */
 document.addEventListener("DOMContentLoaded",()=>{
   dateInput.value=new Date().toISOString().slice(0,10);
 });
