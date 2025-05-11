@@ -1,39 +1,45 @@
-/* ===== 共通 ===== */
+/* ----- 共通 ----- */
 body{font-family:system-ui,sans-serif;background:#f4f4f4;padding:16px;}
-input,button{width:100%;margin:6px 0 12px;padding:10px;font-size:1rem;box-sizing:border-box;}
+input,button{width:100%;margin:6px 0 12px;padding:10px;
+             font-size:1rem;box-sizing:border-box;}
 button{background:#2196f3;color:#fff;border:none;border-radius:6px;cursor:pointer;}
 ul{list-style:none;padding:0;margin:0;}
 .green{color:#0baf4b;font-weight:bold;}
 .red  {color:#f44336;font-weight:bold;}
 
-/* タブ／カードは前回と同じ … 省略 */
+/* タブ & カード（変更なし）*/
+.tab-button{background:#eee;color:#333;border:none;padding:12px;font-size:1rem;
+            margin-right:4px;border-radius:8px 8px 0 0;cursor:pointer;flex:1 1 50%;}
+.tab-button.active{background:#2196f3;color:#fff;}
+.tab-content{max-width:600px;margin:auto;background:#fff;padding:20px;
+             border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,.1);box-sizing:border-box;}
 
-/* ===== 支出履歴行 ===== */
+/* ----- 支出履歴行 ----- */
 li{
-  display:grid;                /* 2列グリッド */
-  grid-template-columns: 1fr auto; /* ①テキスト ②アイコン */
+  display:flex;              /* 左右に並べる */
+  gap:12px;                  /* テキストとアイコンの間隔 */
   align-items:center;
   background:#eee;
-  padding:12px;
+  padding:12px 16px;         /* 行左右の余白 */
   border-radius:8px;
   margin-bottom:10px;
   line-height:1.4;
 }
-
 .exp-text{
-  white-space:nowrap;          /* 行を折り返さない */
-  overflow:hidden;             /* はみ出し対策 */
-  text-overflow:ellipsis;
+  flex:1 1 0;                /* 残り幅いっぱいに広がる */
+  min-width:0;               /* はみ出し許可 */
 }
-
 .del-btn{
-  margin-left:16px;
+  flex:0 0 24px;             /* 幅を固定（24px）*/
   background:transparent;border:none;cursor:pointer;
-  color:#f44336;font-size:22px;
+  color:#f44336;font-size:22px;line-height:1;
 }
 
-/* ===== スマホ調整 ===== */
+/* ----- スマホ ----- */
 @media(max-width:480px){
+  body{padding:10px;}
   .tab-content{max-width:100%;padding:16px;}
-  .del-btn{font-size:20px;margin-left:12px;}
+  input,button{font-size:1.05rem;padding:12px;}
+  .tab-button{font-size:.95rem;margin-right:2px;}
+  .del-btn{font-size:20px;flex-basis:20px;}
 }
