@@ -1,60 +1,14 @@
-body {
-  font-family: sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
-}
-.tab-content {
-  max-width: 600px;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-input, button {
-  width: 100%;
-  margin: 5px 0 10px;
-  padding: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-button {
-  background: #2196f3;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.tab-button {
-  background: #eee;
-  color: #333;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  margin-right: 5px;
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-}
-.tab-button.active {
-  background: #2196f3;
-  color: #fff;
-}
-ul { list-style: none; padding: 0; }
-li {
-  background: #eee;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  position: relative;
-  cursor: pointer;
-}
-li button {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-}
-.remaining-positive { color: #4caf50; font-weight: bold; }
-.remaining-negative { color: #f44336; font-weight: bold; }
+body          { font-family:sans-serif; background:#f4f4f4; padding:20px; }
+.tab-content  { max-width:600px; margin:auto; background:#fff; padding:20px;
+                border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,.1); }
+input,button  { width:100%; margin:5px 0 10px; padding:8px; font-size:16px; }
+button        { background:#2196f3; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+.tab-button   { background:#eee; color:#333; border:none; padding:10px; font-size:16px;
+                margin-right:5px; border-radius:8px 8px 0 0; cursor:pointer; }
+.tab-button.active{ background:#2196f3; color:#fff; }
+ul            { list-style:none; padding:0; }
+li            { background:#eee; padding:10px; border-radius:8px; margin-bottom:8px; position:relative; }
+.del-btn      { float:right; background:#f44336; border:none; color:#fff;
+                padding:3px 8px; border-radius:4px; cursor:pointer; }
+.green        { color:#0baf4b; font-weight:bold; }
+.red          { color:#f44336; font-weight:bold; }
