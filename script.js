@@ -1,4 +1,4 @@
-// ===== Firebase オブジェクト =====
+// ===== Firebase 参照 =====
 const {
   db, auth,
   collection, addDoc, getDoc, setDoc,
@@ -19,42 +19,47 @@ let barChart    = null;
 
 /* ===== Util ===== */
 const getMonthKey = d => d.slice(0,7);
-const markErr     = (el,f)=>el.style.border=f?"2px solid red":"";
+const markErr = (el,f) => el.style.border = f ? "2px solid red" : "";
 
 /* ===== ログイン / 新規登録 ===== */
 async function loginOrSignup(){
-  const email=prompt("メールアドレスを入力"), pass=prompt("パスワードを入力（6文字以上）");
-  if(!email||!pass) return;
+  const email = prompt("メールアドレスを入力");
+  const pass  = prompt("パスワードを入力（6文字以上）");
+  if(!email || !pass) return;
+
   try{
-    const r=await signInWithEmailAndPassword(auth,email,pass);
-    currentUser=r.user; alert("ログイン成功"); updateDisplay();
+    const r = await signInWithEmailAndPassword(auth,email,pass);
+    currentUser = r.user; alert("ログイン成功"); updateDisplay();
   }catch(err){
-    if(err.code==="auth/invalid-credential"||err.code==="auth/user-not-found"){
-      const r=await createUserWithEmailAndPassword(auth,email,pass);
-      currentUser=r.user; alert("新規登録成功"); updateDisplay();
+    if(err.code === "auth/invalid-credential" || err.code === "auth/user-not-found"){
+      const r = await createUserWithEmailAndPassword(auth,email,pass);
+      currentUser = r.user; alert("新規登録成功"); updateDisplay();
     }else alert("ログイン失敗: "+err.message);
   }
 }
-onAuthStateChanged(auth,u=>{ currentUser=u; u?updateDisplay():loginOrSignup(); });
+onAuthStateChanged(auth,u => { currentUser=u; u?updateDisplay():loginOrSignup(); });
 
 /* ===== 予算設定 ===== */
 async function setBudget(){
   if(!currentUser) return;
-  const key=getMonthKey(dateInput.value||new Date().toISOString().slice(0,10));
-  await setDoc(doc(db,"users",currentUser.uid,"budgets",key),{budget:Number(budgetInput.value||0)});
+  const key = getMonthKey(dateInput.value || new Date().toISOString().slice(0,10));
+  await setDoc(doc(db,"users",currentUser.uid,"budgets",key),{ budget:Number(budgetInput.value||0) });
   updateDisplay();
 }
 
 /* ===== 支出追加 ===== */
 async function addExpense(){
   if(!currentUser) return;
-  const date=dateInput.value, desc=descInput.value.trim(), amt=Number(amountInput.value);
+  const date = dateInput.value, desc = descInput.value.trim(), amt = Number(amountInput.value);
+
   markErr(dateInput,!date); markErr(descInput,!desc); markErr(amountInput,!amt||amt<=0);
   if(!date||!desc||!amt||amt<=0){ alert("正しく入力してください"); return; }
+
   await addDoc(collection(db,"users",currentUser.uid,"expenses"),{
-    date,desc,amount:amt,month:getMonthKey(date),createdAt:new Date()
+    date, desc, amount:amt, month:getMonthKey(date), createdAt:new Date()
   });
-  descInput.value=""; amountInput.value=""; markErr(descInput,false); markErr(amountInput,false);
+  descInput.value=""; amountInput.value="";
+  markErr(descInput,false); markErr(amountInput,false);
   updateDisplay(); updateChart();
 }
 
@@ -68,15 +73,15 @@ async function deleteExpense(id){
 /* ===== 画面更新 ===== */
 async function updateDisplay(){
   if(!currentUser) return;
-  const date=dateInput.value||new Date().toISOString().slice(0,10);
-  const key =getMonthKey(date);
+  const date = dateInput.value || new Date().toISOString().slice(0,10);
+  const key  = getMonthKey(date);
 
-  const bSnap=await getDoc(doc(db,"users",currentUser.uid,"budgets",key));
-  const budget=bSnap.exists()?bSnap.data().budget:0;
+  const bSnap = await getDoc(doc(db,"users",currentUser.uid,"budgets",key));
+  const budget= bSnap.exists()? bSnap.data().budget : 0;
   budgetInput.value=budget;
 
-  const q= query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
-  const qs=await getDocs(q);
+  const q = query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
+  const qs= await getDocs(q);
 
   historyList.innerHTML="";
   let total=0;
@@ -84,12 +89,12 @@ async function updateDisplay(){
     const e=d.data(); total+=e.amount;
     const li=document.createElement("li");
     li.innerHTML=
-      `<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
+      `<span><strong>${e.date}</strong> - ${e.desc}：${e.amount} 円</span>
        <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
     historyList.appendChild(li);
   });
 
-  const remain=budget-total;
+  const remain = budget-total;
   remainingEl.textContent=remain;
   remainingEl.classList.toggle("green",remain>=0);
   remainingEl.classList.toggle("red",remain<0);
@@ -97,9 +102,9 @@ async function updateDisplay(){
 
 /* ===== グラフ更新 ===== */
 async function updateChart(){
-  if(!currentUser) return;
-  const exp=await getDocs(collection(db,"users",currentUser.uid,"expenses"));
-  const bud=await getDocs(collection(db,"users",currentUser.uid,"budgets"));
+  if(!currentUser)return;
+  const exp = await getDocs(collection(db,"users",currentUser.uid,"expenses"));
+  const bud = await getDocs(collection(db,"users",currentUser.uid,"budgets"));
 
   const months=new Set();
   exp.forEach(d=>months.add(d.data().month));
