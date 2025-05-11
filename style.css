@@ -32,7 +32,7 @@ li{
 .del-btn{
   flex:0 0 24px;             /* 幅を固定（24px）*/
   background:transparent;border:none;cursor:pointer;
-  color:#f44336;font-size:22px;line-height:1;
+  color:#f44336;font-size:18px;line-height:1;
 }
 
 /* ----- スマホ ----- */
