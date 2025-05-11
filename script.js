@@ -1,9 +1,11 @@
-// ===== Firebase 参照 =====
+// ===== Firebase オブジェクト =====
 const {
   db, auth,
   collection, addDoc, getDoc, setDoc,
   getDocs, doc, query, where, deleteDoc,
-  createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
 } = window;
 
 /* ===== DOM ===== */
@@ -21,7 +23,7 @@ let barChart    = null;
 const getMonthKey = d => d.slice(0,7);
 const markErr = (el,f) => el.style.border = f ? "2px solid red" : "";
 
-/* ===== ログイン / 新規登録 ===== */
+/* ===== 認証 ===== */
 async function loginOrSignup(){
   const email = prompt("メールアドレスを入力");
   const pass  = prompt("パスワードを入力（6文字以上）");
@@ -43,7 +45,8 @@ onAuthStateChanged(auth,u => { currentUser=u; u?updateDisplay():loginOrSignup();
 async function setBudget(){
   if(!currentUser) return;
   const key = getMonthKey(dateInput.value || new Date().toISOString().slice(0,10));
-  await setDoc(doc(db,"users",currentUser.uid,"budgets",key),{ budget:Number(budgetInput.value||0) });
+  await setDoc(doc(db,"users",currentUser.uid,"budgets",key),
+               { budget:Number(budgetInput.value||0) });
   updateDisplay();
 }
 
@@ -77,49 +80,55 @@ async function updateDisplay(){
   const key  = getMonthKey(date);
 
   const bSnap = await getDoc(doc(db,"users",currentUser.uid,"budgets",key));
-  const budget= bSnap.exists()? bSnap.data().budget : 0;
-  budgetInput.value=budget;
+  const budget = bSnap.exists()? bSnap.data().budget : 0;
+  budgetInput.value = budget;
 
-  const q = query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
-  const qs= await getDocs(q);
+  const q  = query(collection(db,"users",currentUser.uid,"expenses"), where("month","==",key));
+  const qs = await getDocs(q);
 
-  historyList.innerHTML="";
-  let total=0;
+  historyList.innerHTML = "";
+  let total = 0;
+
   qs.forEach(d=>{
-    const e=d.data(); total+=e.amount;
-    const li=document.createElement("li");
+    const e = d.data();
+    total += e.amount;
+
+    /* --- 日付を yy/MM/dd 表記に変換 --- */
+    const shortDate = e.date.slice(2).replace(/-/g,"/");  // 2025-05-11 -> 25/05/11
+
+    const li = document.createElement("li");
     li.innerHTML =
-      `<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
+      `<span class="exp-text"><strong>${shortDate}</strong> - ${e.desc}：${e.amount} 円</span>
        <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
     historyList.appendChild(li);
   });
 
-  const remain = budget-total;
-  remainingEl.textContent=remain;
-  remainingEl.classList.toggle("green",remain>=0);
-  remainingEl.classList.toggle("red",remain<0);
+  const remain = budget - total;
+  remainingEl.textContent = remain;
+  remainingEl.classList.toggle("green",remain >= 0);
+  remainingEl.classList.toggle("red",  remain < 0);
 }
 
 /* ===== グラフ更新 ===== */
 async function updateChart(){
-  if(!currentUser)return;
+  if(!currentUser) return;
   const exp = await getDocs(collection(db,"users",currentUser.uid,"expenses"));
   const bud = await getDocs(collection(db,"users",currentUser.uid,"budgets"));
 
-  const months=new Set();
+  const months = new Set();
   exp.forEach(d=>months.add(d.data().month));
   bud.forEach(d=>months.add(d.id));
-  const mArr=[...months].sort();
+  const mArr = [...months].sort();
 
-  const budgets=mArr.map(m=>{
-    const b=bud.docs.find(d=>d.id===m); return b?b.data().budget:0;});
-  const totals=mArr.map(m=>{
+  const budgets = mArr.map(m=>{
+    const b = bud.docs.find(d=>d.id===m); return b?b.data().budget:0; });
+  const totals = mArr.map(m=>{
     return exp.docs.filter(d=>d.data().month===m)
-                   .reduce((s,x)=>s+x.data().amount,0); });
+                   .reduce((s,x)=>s + x.data().amount,0); });
 
-  const ctx=document.getElementById("monthlyChart").getContext("2d");
+  const ctx = document.getElementById("monthlyChart").getContext("2d");
   if(barChart) barChart.destroy();
-  barChart=new Chart(ctx,{type:"bar",
+  barChart = new Chart(ctx,{type:"bar",
     data:{labels:mArr,datasets:[
       {label:"予算", data:budgets, backgroundColor:"rgba(33,150,243,0.5)"},
       {label:"支出", data:totals,  backgroundColor:"rgba(244,67,54,0.5)"}
@@ -137,5 +146,5 @@ function switchTab(id){
 
 /* ===== 初期 ===== */
 document.addEventListener("DOMContentLoaded",()=>{
-  dateInput.value=new Date().toISOString().slice(0,10);
+  dateInput.value = new Date().toISOString().slice(0,10);
 });
