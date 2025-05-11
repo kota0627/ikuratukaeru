@@ -1,53 +1,39 @@
-/* ============ 共通スタイル ============ */
-body          { font-family: system-ui, sans-serif; background:#f4f4f4; padding:16px; }
+/* ===== 共通 ===== */
+body{font-family:system-ui,sans-serif;background:#f4f4f4;padding:16px;}
+input,button{width:100%;margin:6px 0 12px;padding:10px;font-size:1rem;box-sizing:border-box;}
+button{background:#2196f3;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+ul{list-style:none;padding:0;margin:0;}
+.green{color:#0baf4b;font-weight:bold;}
+.red  {color:#f44336;font-weight:bold;}
 
-input,button  { width:100%; margin:6px 0 12px; padding:10px;
-                font-size:1rem; box-sizing:border-box; }  /* ← はみ出し防止 */
+/* タブ／カードは前回と同じ … 省略 */
 
-button        { background:#2196f3; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-ul            { list-style:none; padding:0; margin:0; }
-
-.green        { color:#0baf4b; font-weight:bold; }
-.red          { color:#f44336; font-weight:bold; }
-
-/* タブボタン */
-.tab-button   { background:#eee; color:#333; border:none; padding:12px; font-size:1rem;
-                margin-right:4px; border-radius:8px 8px 0 0; cursor:pointer; flex:1 1 50%; }
-.tab-button.active{ background:#2196f3; color:#fff; }
-
-/* カード */
-.tab-content  { max-width:600px; margin:auto; background:#fff; padding:20px;
-                border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,.1); box-sizing:border-box; }
-
-/* ============ 支出履歴行 & ゴミ箱 ============ */
+/* ===== 支出履歴行 ===== */
 li{
-  display:flex;                     /* 左右に分ける */
-  justify-content:space-between;    /* 左右を離して配置 */
-  align-items:center;               /* 縦方向中央揃え */
+  display:grid;                /* 2列グリッド */
+  grid-template-columns: 1fr auto; /* ①テキスト ②アイコン */
+  align-items:center;
   background:#eee;
-  padding:12px;                     /* 均等パディング */
+  padding:12px;
   border-radius:8px;
   margin-bottom:10px;
   line-height:1.4;
 }
 
-.del-btn{
-  background:transparent;
-  border:none;
-  cursor:pointer;
-  color:#f44336;
-  font-size:22px;
-  flex-shrink:0;                    /* 狭くなっても縮まない */
-  margin-left:16px;                 /* テキストとアイコンの間隔 */
+.exp-text{
+  white-space:nowrap;          /* 行を折り返さない */
+  overflow:hidden;             /* はみ出し対策 */
+  text-overflow:ellipsis;
 }
 
-/* ============ スマホ専用スタイル ============ */
-@media (max-width: 480px){
-  body            { padding:10px; }
-  .tab-content    { max-width:100%; padding:16px; }
+.del-btn{
+  margin-left:16px;
+  background:transparent;border:none;cursor:pointer;
+  color:#f44336;font-size:22px;
+}
 
-  input,button    { font-size:1.05rem; padding:12px; }
-  .tab-button     { font-size:.95rem; margin-right:2px; }
-
-  .del-btn        { font-size:20px; margin-left:12px; }
+/* ===== スマホ調整 ===== */
+@media(max-width:480px){
+  .tab-content{max-width:100%;padding:16px;}
+  .del-btn{font-size:20px;margin-left:12px;}
 }
