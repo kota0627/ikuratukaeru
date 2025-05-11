@@ -34,6 +34,48 @@
 
     window.db = db;
     window.auth = auth;
+
+    <!-- ここは すでに index.html にある Firebase 初期化スクリプト -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDoc, setDoc,
+           getDocs, doc, query, where } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword,
+           signInWithEmailAndPassword, onAuthStateChanged }
+           from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCz8ZSNckbmrACW4cJqKx1I4GSQNyjDRkM",
+    authDomain: "ikurakun-firebase.firebaseapp.com",
+    projectId: "ikurakun-firebase",
+    storageBucket: "ikurakun-firebase.appspot.com",   <!-- ← ここ修正 .appspot.com ではなく .appspot.com が正しい -->
+    messagingSenderId: "492357155886",
+    appId: "1:492357155886:web:9a81837ea8361d2d0ef3bf"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  /* ★★ ここから追記 ★★ */   /* ←🔴 この行より下を丸ごと貼ってOK */
+
+  // --- Firestore 関数をグローバル公開 ---
+  window.db        = db;
+  window.collection= collection;
+  window.addDoc    = addDoc;
+  window.getDoc    = getDoc;
+  window.setDoc    = setDoc;
+  window.getDocs   = getDocs;
+  window.doc       = doc;
+  window.query     = query;
+  window.where     = where;
+
+  // --- Auth 関数をグローバル公開 ---
+  window.auth                         = auth;
+  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window.signInWithEmailAndPassword     = signInWithEmailAndPassword;
+  window.onAuthStateChanged             = onAuthStateChanged;
+  
   </script>
 
   <!-- script.js 読み込み -->
