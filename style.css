@@ -19,12 +19,12 @@ li{
 
 .del-btn{
   position:absolute;
-  right:5px;                 /* 右端から 10px */
-  top:70%; transform:translateY(-50%);
+  right:2px;               
+  top:30%; transform:translateY(-30%);
   background:transparent;
   border:none;
   color:#f44336;              /* アイコンだけ赤 */
-  font-size:18px;
+  font-size:25px;
   cursor:pointer;
   margin-left:2em;            /* テキストとアイコンの間隔≈全角2文字 */
 }
