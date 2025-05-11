@@ -1,14 +1,13 @@
-// 今月いくら使えるくん main script
+/* ========= 今月いくら使えるくん script ========= */
 const dateInput = document.getElementById("dateInput");
 dateInput.value = new Date().toISOString().slice(0, 10);
 dateInput.addEventListener("change", updateDisplayByDate);
 
 const getMonthKey = (d) => d.slice(0, 7); // yyyy-mm
-let editMode = null; // { key, index } or null
+let editMode = null;                       // { key, index } or null
 
 function setBudget() {
-  const date = dateInput.value;
-  const key  = getMonthKey(date);
+  const key = getMonthKey(dateInput.value);
   const budget = Number(document.getElementById("budgetInput").value || 0);
   localStorage.setItem(`budget_${key}`, budget);
   updateDisplayByDate();
@@ -19,11 +18,7 @@ function addExpense() {
   const date   = dateInput.value;
   const desc   = document.getElementById("descInput").value.trim();
   const amount = Number(document.getElementById("amountInput").value);
-
-  if (!date || !desc || amount <= 0) {
-    alert("正しく入力してね！");
-    return;
-  }
+  if (!date || !desc || amount <= 0) { alert("正しく入力してね！"); return; }
 
   const key      = getMonthKey(date);
   const expenses = JSON.parse(localStorage.getItem(`expenses_${key}`) || "[]");
@@ -44,9 +39,9 @@ function addExpense() {
 }
 
 function deleteExpense(key, idx) {
-  const data = JSON.parse(localStorage.getItem(`expenses_${key}`) || "[]");
-  data.splice(idx, 1);
-  localStorage.setItem(`expenses_${key}`, JSON.stringify(data));
+  const list = JSON.parse(localStorage.getItem(`expenses_${key}`) || "[]");
+  list.splice(idx, 1);
+  localStorage.setItem(`expenses_${key}`, JSON.stringify(list));
   updateDisplayByDate();
   updateChart();
 }
@@ -60,20 +55,21 @@ function switchTab(tabId, evt) {
 }
 
 function updateDisplayByDate() {
-  const date     = dateInput.value;
-  const key      = getMonthKey(date);
+  const key      = getMonthKey(dateInput.value);
   const budget   = Number(localStorage.getItem(`budget_${key}`) || 0);
   const expenses = JSON.parse(localStorage.getItem(`expenses_${key}`) || "[]");
 
   document.getElementById("budgetInput").value = budget;
-  const list = document.getElementById("historyList");
-  list.innerHTML = "";
+  const listEl = document.getElementById("historyList");
+  listEl.innerHTML = "";
   let total = 0;
 
   expenses.forEach((e, i) => {
     total += e.amount;
     const li = document.createElement("li");
-    li.innerHTML = \`<strong>\${e.date}</strong> - \${e.desc}：\${e.amount} 円 <button onclick="deleteExpense('\${key}', \${i})">🗑</button>\`;
+    li.innerHTML =
+      `<strong>${e.date}</strong> - ${e.desc}：${e.amount} 円
+       <button onclick="deleteExpense('${key}', ${i})">🗑</button>`;
     li.onclick = () => {
       dateInput.value = e.date;
       document.getElementById("descInput").value   = e.desc;
@@ -81,13 +77,13 @@ function updateDisplayByDate() {
       editMode = { key, index: i };
       document.getElementById("submitBtn").textContent = "更新";
     };
-    list.appendChild(li);
+    listEl.appendChild(li);
   });
 
   const remain = budget - total;
-  const rEl = document.getElementById("remainingAmount");
-  rEl.textContent = remain;
-  rEl.className = remain >= 0 ? "remaining-positive" : "remaining-negative";
+  const remainEl = document.getElementById("remainingAmount");
+  remainEl.textContent = remain;
+  remainEl.className   = remain >= 0 ? "remaining-positive" : "remaining-negative";
 }
 
 let barChart = null;
@@ -102,13 +98,11 @@ function updateChart() {
 
   const labels = [], budgets = [], totals = [];
   Array.from(months).sort().forEach(m => {
-    const b = Number(localStorage.getItem(\`budget_\${m}\`) || 0);
-    const e = JSON.parse(localStorage.getItem(\`expenses_\${m}\`) || "[]");
+    const b = Number(localStorage.getItem(`budget_${m}`) || 0);
+    const e = JSON.parse(localStorage.getItem(`expenses_${m}`) || "[]");
     const t = e.reduce((s, x) => s + x.amount, 0);
     if (b === 0 && t === 0) return;
-    labels.push(m);
-    budgets.push(b);
-    totals.push(t);
+    labels.push(m); budgets.push(b); totals.push(t);
   });
 
   if (barChart) barChart.destroy();
@@ -126,10 +120,10 @@ function updateChart() {
       plugins: {
         tooltip: {
           callbacks: {
-            afterBody: (ctx) => {
-              const i   = ctx[0].dataIndex;
+            afterBody: info => {
+              const i = info[0].dataIndex;
               const diff = budgets[i] - totals[i];
-              return \`差額：\${diff >= 0 ? '+' : ''}\${diff} 円\`;
+              return `差額：${diff >= 0 ? "+" : ""}${diff} 円`;
             }
           }
         }
