@@ -19,8 +19,8 @@ li{
 
 .del-btn{
   position:absolute;
-  right:10px;                 /* 右端から 10px */
-  top:50%; transform:translateY(-50%);
+  right:5px;                 /* 右端から 10px */
+  top:70%; transform:translateY(-50%);
   background:transparent;
   border:none;
   color:#f44336;              /* アイコンだけ赤 */
