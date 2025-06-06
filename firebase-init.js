@@ -3,7 +3,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, getDoc, setDoc,
-  getDocs, doc, query, where, deleteDoc
+  getDocs, doc, query, where, deleteDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 import {
   getAuth, createUserWithEmailAndPassword,
@@ -29,7 +29,7 @@ const auth = getAuth(app);
 Object.assign(window, {
   db, auth,
   collection, addDoc, getDoc, setDoc,
-  getDocs, doc, query, where, deleteDoc,
+  getDocs, doc, query, where, deleteDoc, updateDoc,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged

@@ -35,7 +35,8 @@
       <input type="text" id="descInput" placeholder="例：ランチ">
       <label>金額（円）:</label>
       <input type="number" id="amountInput">
-      <button onclick="addExpense()">追加</button>
+      <button id="addBtn" onclick="addExpense()">追加</button>
+      <button id="saveBtn" onclick="saveExpenseEdit()" style="display:none;">更新</button>
     </div>
 
     <div class="section">

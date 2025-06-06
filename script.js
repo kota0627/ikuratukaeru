@@ -2,7 +2,7 @@
 const {
   db, auth,
   collection, addDoc, getDoc, setDoc,
-  getDocs, doc, query, where, deleteDoc,
+  getDocs, doc, query, where, deleteDoc, updateDoc,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged
@@ -15,9 +15,12 @@ const descInput   = document.getElementById("descInput");
 const amountInput = document.getElementById("amountInput");
 const remainingEl = document.getElementById("remainingAmount");
 const historyList = document.getElementById("historyList");
+const addBtn      = document.getElementById("addBtn");
+const saveBtn     = document.getElementById("saveBtn");
 
 let currentUser = null;
 let barChart    = null;
+let editingId   = null;
 
 /* ===== Util ===== */
 const getMonthKey = d => d.slice(0,7);
@@ -66,6 +69,37 @@ async function addExpense(){
   updateDisplay(); updateChart();
 }
 
+/* ===== 支出編集開始 ===== */
+async function startEditExpense(id){
+  if(!currentUser) return;
+  const snap = await getDoc(doc(db,"users",currentUser.uid,"expenses",id));
+  if(!snap.exists()) return;
+  const e = snap.data();
+  dateInput.value = e.date;
+  descInput.value = e.desc;
+  amountInput.value = e.amount;
+  editingId = id;
+  addBtn.style.display = "none";
+  saveBtn.style.display = "inline-block";
+}
+
+/* ===== 支出保存 ===== */
+async function saveExpenseEdit(){
+  if(!currentUser || !editingId) return;
+  const date = dateInput.value, desc = descInput.value.trim(), amt = Number(amountInput.value);
+  markErr(dateInput,!date); markErr(descInput,!desc); markErr(amountInput,!amt||amt<=0);
+  if(!date||!desc||!amt||amt<=0){ alert("正しく入力してください"); return; }
+  await updateDoc(doc(db,"users",currentUser.uid,"expenses",editingId),{
+    date, desc, amount:amt, month:getMonthKey(date)
+  });
+  editingId = null;
+  descInput.value=""; amountInput.value="";
+  addBtn.style.display = "inline-block";
+  saveBtn.style.display = "none";
+  markErr(descInput,false); markErr(amountInput,false);
+  updateDisplay(); updateChart();
+}
+
 /* ===== 支出削除 ===== */
 async function deleteExpense(id){
   if(!currentUser) return;
@@ -99,6 +133,7 @@ async function updateDisplay(){
     const li = document.createElement("li");
     li.innerHTML =
       `<span class="exp-text"><strong>${shortDate}</strong> - ${e.desc}：${e.amount} 円</span>
+       <button class="edit-btn" onclick="startEditExpense('${d.id}')">✏</button>
        <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
     historyList.appendChild(li);
   });
@@ -148,3 +183,7 @@ function switchTab(id){
 document.addEventListener("DOMContentLoaded",()=>{
   dateInput.value = new Date().toISOString().slice(0,10);
 });
+
+function updateDisplayByDate(){
+  updateDisplay();
+}
