@@ -131,10 +131,17 @@ async function updateDisplay(){
     const shortDate = e.date.slice(2).replace(/-/g,"/");  // 2025-05-11 -> 25/05/11
 
     const li = document.createElement("li");
+    li.className = "relative bg-white shadow-md rounded-lg p-4 mb-4";
     li.innerHTML =
-      `<span class="exp-text"><strong>${shortDate}</strong> - ${e.desc}：${e.amount} 円</span>
-       <button class="edit-btn" onclick="startEditExpense('${d.id}')">✏</button>
-       <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>`;
+      `<div>
+         <div class="text-sm text-gray-500">${shortDate}</div>
+         <div class="font-medium mt-1">${e.desc}</div>
+         <div class="mt-1">${e.amount} 円</div>
+       </div>
+       <div class="absolute bottom-3 right-3 flex space-x-3">
+         <button class="edit-btn" onclick="startEditExpense('${d.id}')">✏</button>
+         <button class="del-btn" onclick="deleteExpense('${d.id}')">🗑</button>
+       </div>`;
     historyList.appendChild(li);
   });
 
