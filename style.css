@@ -36,6 +36,11 @@ li{
   background:transparent;border:none;cursor:pointer;
   color:#f44336;font-size:22px;line-height:1;
 }
+.edit-btn{
+  flex:0 0 24px;
+  background:transparent;border:none;cursor:pointer;
+  color:#2196f3;font-size:22px;line-height:1;
+}
 
 /* ===== スマホ ===== */
 @media(max-width:480px){
@@ -44,4 +49,5 @@ li{
   input,button{font-size:1.05rem;padding:12px;}
   .tab-button{font-size:.95rem;margin-right:2px;}
   .del-btn{font-size:20px;flex-basis:20px;}
+  .edit-btn{font-size:20px;flex-basis:20px;}
 }
